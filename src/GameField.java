@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class GameField extends JPanel implements ActionListener {
     int points = 0;
-    int SPEED = 175;
+    int SPEED = 176;
 
     private final int SIZE = 320*2;
     private final int DOT_SIZE = 16;
