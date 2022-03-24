@@ -1,17 +1,15 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.util.Random;
 
 
 public class GameField extends JPanel implements ActionListener {
     int points = 0;
-    int SPEED = 210;
+    int SPEED = 100;
 
     private final int SIZE = 320*2;
     private final int DOT_SIZE = 16;
@@ -61,9 +59,9 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     public void loadImages(){
-        ImageIcon iia = new ImageIcon("Apple_Bonya.png");
+        ImageIcon iia = new ImageIcon("src/resources/Apple_Bonya.png");
         apple = iia.getImage();
-        ImageIcon iid = new ImageIcon("Snake_Bys.png");
+        ImageIcon iid = new ImageIcon("src/resources/Snake_Bys.png");
         dot = iid.getImage();
     }
 

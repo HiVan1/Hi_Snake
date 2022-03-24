@@ -3,7 +3,8 @@ import javax.swing.*;
 public class MainWindow extends JFrame {
 
     public MainWindow(){
-        setIconImage(new ImageIcon("logo.png").getImage());
+
+        setIconImage(new ImageIcon("src/resources/logo.png").getImage());
         setTitle("Змейка");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(336*2, 359*2);
