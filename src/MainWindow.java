@@ -8,6 +8,8 @@ public class MainWindow extends JFrame {
         setTitle("Змейка");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(GameField.SIZE+33, GameField.SIZE+56);
+
+
         setLocationRelativeTo(null);
         add(new GameField());
         setResizable(false);

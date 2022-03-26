@@ -12,6 +12,7 @@ public class GameField extends JPanel implements ActionListener {
     private static final int UNIT = 40;//Кол-во клеток(wight, height)
     public static final int ONE_UNIT = 16;//Размер клеток
     public static int SIZE = UNIT*ONE_UNIT;//Максимальный размер карты
+    public int chances;
 
     private Image snake;//Объект для картинки змеи
     private Image snakeHead;//Объект для картинки головы змеи
@@ -61,11 +62,22 @@ public class GameField extends JPanel implements ActionListener {
         timer.start();//Запуск игры
         createApple();//Создание яблока
         createBigApple();//Создание большого яблока
+
     }
     //Рандомное положение яблока по Х и У
     public void createApple(){
+        chances = new Random().nextInt(4);
+
         appleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
         appleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+        //Проверка на появление яблока под змеей
+        for (int i = 1; i < sizeSnake; i++) {
+            if ((x[i] == appleX) && (y[i] == appleY)) {
+                appleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+                appleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+            }
+        }
+
     }
     //Проверка на сталкновение с яоблоком
     public void checkApple(){
@@ -76,8 +88,36 @@ public class GameField extends JPanel implements ActionListener {
     }
     //Рандомное положение большого яблока по Х и У
     public void createBigApple(){
+
+//        if(chances == 0){
+//            System.out.println("Ник зашел в метод");
+//            BigAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+//            BigAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+//            //Проверка на появление большого яблока под змеей
+//            for (int i = 1; i < sizeSnake; i++) {
+//                if ((x[i] == BigAppleX) && (y[i] == BigAppleY)) {
+//                    BigAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+//                    BigAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+//                }
+//            }
+//        }
+//        else{
+//            BigAppleX = -ONE_UNIT;
+//            BigAppleY = -ONE_UNIT;
+//        }
+
         BigAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
         BigAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+        //Проверка на появление большого яблока под змеей
+        for (int i = 1; i < sizeSnake; i++) {
+            if ((x[i] == BigAppleX) && (y[i] == BigAppleY)) {
+                BigAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+                BigAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+            }
+        }
+
+
+
     }
     //Проверка на сталкновение с большим яоблоком
     public void checkBigApple(){
@@ -128,12 +168,12 @@ public class GameField extends JPanel implements ActionListener {
             //Отрисовка горизонтальной линии
             for (int x = 0; x < UNIT*ONE_UNIT+UNIT; x+=ONE_UNIT) {
                 g.setColor(Color.gray);
-                g.drawLine(x, 0, x, UNIT*ONE_UNIT+(3*UNIT));
+                g.drawLine(x, 0, x, UNIT*ONE_UNIT+UNIT);
             }
             //Отрисовка вертикальной линии
-            for (int y = 0; y < UNIT*ONE_UNIT+(2*UNIT); y+=ONE_UNIT) {
+            for (int y = 0; y < UNIT*ONE_UNIT+UNIT; y+=ONE_UNIT) {
                 g.setColor(Color.gray);
-                g.drawLine(0, y, UNIT*ONE_UNIT+(2*UNIT), y);
+                g.drawLine(0, y, UNIT*ONE_UNIT+UNIT, y);
             }
             //Отрисовка яблок
             g.drawImage(apple, appleX, appleY,this);
