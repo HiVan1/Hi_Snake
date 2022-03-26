@@ -131,9 +131,9 @@ public class GameField extends JPanel implements ActionListener {
                 g.drawLine(x, 0, x, UNIT*ONE_UNIT+(3*UNIT));
             }
             //Отрисовка вертикальной линии
-            for (int y = 0; y < UNIT*ONE_UNIT+(3*UNIT); y+=ONE_UNIT) {
+            for (int y = 0; y < UNIT*ONE_UNIT+(2*UNIT); y+=ONE_UNIT) {
                 g.setColor(Color.gray);
-                g.drawLine(0, y, UNIT*ONE_UNIT+(3*UNIT), y);
+                g.drawLine(0, y, UNIT*ONE_UNIT+(2*UNIT), y);
             }
             //Отрисовка яблок
             g.drawImage(apple, appleX, appleY,this);
@@ -254,7 +254,7 @@ public class GameField extends JPanel implements ActionListener {
                 if(died){
                     timer.stop();
 
-                    ImageIcon iid0 = new ImageIcon("src/resources/Apple_Bonya.png");
+                    ImageIcon iid0 = new ImageIcon("src/resources/Snake_Bys_Right.png");
                     snakeHead = iid0.getImage();
 
                     left = false;

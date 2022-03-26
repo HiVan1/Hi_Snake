@@ -7,7 +7,7 @@ public class MainWindow extends JFrame {
         setIconImage(new ImageIcon("src/resources/logo.png").getImage());
         setTitle("Змейка");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(GameField.SIZE+49, GameField.SIZE+72);
+        setSize(GameField.SIZE+33, GameField.SIZE+56);
         setLocationRelativeTo(null);
         add(new GameField());
         setResizable(false);
