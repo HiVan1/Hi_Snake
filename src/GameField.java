@@ -8,78 +8,78 @@ import java.util.Random;
 
 
 public class GameField extends JPanel implements ActionListener {
-    int SPEED = 150;//скорсть игры
+    int SPEED = 125;//скорсть игры
     private static final int UNIT = 40;//Кол-во клеток(wight, height)
     public static final int ONE_UNIT = 16;//Размер клеток
     public static int SIZE = UNIT*ONE_UNIT;//Максимальный размер карты
 
-    private Image snake;
-    private Image snakeHead;
+    private Image snake;//Объект для картинки змеи
+    private Image snakeHead;//Объект для картинки головы змеи
 
-    public Image apple;
-    private static int appleX;
-    private static int appleY;
+    public Image apple;//Объект для картинки яблока
+    private static int appleX;//Положение яблока по Х
+    private static int appleY;//Положение яблока по У
 
-    private Image BigApple;
-    private int BigAppleX;
-    private int BigAppleY;
+    private Image BigApple;//Объект для картинки большого яблока
+    private int BigAppleX;//Положение большого яблока по Х
+    private int BigAppleY;//Положение большого яблока по У
 
-    public static int[] x = new int[SIZE];
-    public static int[] y = new int[SIZE];
-    public static int sizeSnake;
-    private Timer timer;
-
+    public static int[] x = new int[SIZE];//Массив для змеи по Х
+    public static int[] y = new int[SIZE];//Массив для змеи по У
+    public static int sizeSnake;//Размер змеи
+    private Timer timer;//Объект таймера
+    //Направление движения змеи
     private boolean left = false;
     private boolean right = true;
     private boolean up = false;
     private boolean down = false;
 
-    private boolean alive = false;
-    private boolean died = false;
-    private boolean pause = false;
-    private boolean helloMenu = true;
+    private boolean alive = false;//Жива змея true/false
+    private boolean died = false;//Мертва змея true/false
+    private boolean pause = false;//Игра на пузе true/false
+    private boolean helloMenu = true;//Открыто главное меню true/false
 
 
 //    Apple app = new Apple();
 
-
+    //Конструкор класса
     public GameField(){
-//        setBackground(Color.lightGray);
-        loadImages();
-        initGame();
-        addKeyListener(new FieldKeyListener());
+        loadImages();//Закгрузка изображений
+        initGame();//Инициализация игры
+        addKeyListener(new FieldKeyListener());//Прослушивание нажатий
         setFocusable(true);
     }
 
     public void initGame(){
-        sizeSnake = 2;
+        sizeSnake = 2;//Начальный размер змеи
+        //Начальное положение змеи
         for (int i = 0; i < sizeSnake; i++) {
             x[i] = 48 - i*ONE_UNIT;
             y[i] = 48 ;
         }
         timer = new Timer(SPEED,this);
-        timer.start();
-        createApple();
-        createBigApple();
+        timer.start();//Запуск игры
+        createApple();//Создание яблока
+        createBigApple();//Создание большого яблока
     }
-
+    //Рандомное положение яблока по Х и У
     public void createApple(){
         appleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
         appleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
     }
-
+    //Проверка на сталкновение с яоблоком
     public void checkApple(){
         if(x[0] == appleX && y[0] == appleY){
             sizeSnake++;
             createApple();
         }
     }
-
+    //Рандомное положение большого яблока по Х и У
     public void createBigApple(){
         BigAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
         BigAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
     }
-
+    //Проверка на сталкновение с большим яоблоком
     public void checkBigApple(){
         if(x[0] == BigAppleX && y[0] == BigAppleY){
             sizeSnake+=2;
@@ -88,25 +88,28 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     public void loadImages(){
+        //Картинка большого яблока
         ImageIcon iiab = new ImageIcon("src/resources/Big_Apple_Nick.png");
         BigApple = iiab.getImage();
-
+        //Картинка яблока
         ImageIcon iia = new ImageIcon("src/resources/Apple_Bonya.png");
         apple = iia.getImage();
-
+        //Картинка тела змеи
         ImageIcon iid = new ImageIcon("src/resources/Snake_Bys_Right.png");
         snake = iid.getImage();
-
-        ImageIcon iid0 = new ImageIcon("src/resources/Apple_Bonya.png");
+        //Картинка головы змеи
+        ImageIcon iid0 = new ImageIcon("src/resources/Snake_Bys_Right.png");
         snakeHead = iid0.getImage();
     }
 
+    //Отрисовка игры
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        //Отрисовка главного меню
         if(helloMenu){
-            setBackground(Color.pink);
+            setBackground(Color.pink);//Задний фон главного меню
+            //Вывод главного меню
             String menu_text_1 = "Rules:";
             String menu_text_2 = "-Press 'S' to pause";
             String menu_text_3 = "-Use 'Up', 'Down', 'Left', 'Right' to control ";
@@ -119,9 +122,9 @@ public class GameField extends JPanel implements ActionListener {
             g.drawString(menu_text_3,90,SIZE/2 + 30);
             g.drawString(menu_text_4,SIZE/2 - 80,SIZE/2 + 200);
         }
-
+        //Отрисовка игрового поля
         if(alive){
-            setBackground(Color.lightGray);
+            setBackground(Color.lightGray);//Задний фон игрового поля
             //Отрисовка горизонтальной линии
             for (int x = 0; x < UNIT*ONE_UNIT+UNIT; x+=ONE_UNIT) {
                 g.setColor(Color.gray);
@@ -132,20 +135,23 @@ public class GameField extends JPanel implements ActionListener {
                 g.setColor(Color.gray);
                 g.drawLine(0, y, UNIT*ONE_UNIT+(3*UNIT), y);
             }
-
+            //Отрисовка яблок
             g.drawImage(apple, appleX, appleY,this);
             g.drawImage(BigApple, BigAppleX, BigAppleY,this);
 
             for (int i = 0; i < sizeSnake; i++) {
                 if(i == 0){
+                    //Отрисовка головы змеи
                     g.drawImage(snakeHead,x[i],y[i],this);
                 }else{
+                    //Отрисовка тела змеи
                     g.drawImage(snake,x[i],y[i],this);
                 }
             }
         }
+        //Отрисовка экрана после смерти
         if(died){
-            setBackground(Color.cyan);
+            setBackground(Color.cyan);//Задний фон экрана после смерти
             alive = false;
             String str0 = "Game Over ";
             String str1 = "Points: "+ (sizeSnake-2);
@@ -210,7 +216,7 @@ public class GameField extends JPanel implements ActionListener {
         }
         repaint();
     }
-
+    //Слушание нажатий клавиш
     class FieldKeyListener extends KeyAdapter{
         @Override
         public void keyPressed(KeyEvent e) {
