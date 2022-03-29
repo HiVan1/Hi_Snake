@@ -17,6 +17,7 @@ public class GameField extends JPanel implements ActionListener  {
 
     private Image snake;//Объект для картинки змеи
     private Image snakeHead;//Объект для картинки головы змеи
+    private Image lastSnake;
 
     public Image apple;//Объект для картинки яблока
     private static int appleX;//Положение яблока по Х
@@ -26,15 +27,11 @@ public class GameField extends JPanel implements ActionListener  {
     private int BigAppleX = -16;//Положение большого яблока по Х
     private int BigAppleY = -16;//Положение большого яблока по У
 
-    private Image SlowApple;
-    private int SlowAppleX = -16;
-    private int SlowAppleY = -16;
-
     public static int[] x = new int[SIZE];//Массив для змеи по Х
     public static int[] y = new int[SIZE];//Массив для змеи по У
     public static int sizeSnake;//Размер змеи
     public Timer timer;//Объект таймера
-    public Timer timer1;
+
     //Направление движения змеи
     private boolean left = false;
     private boolean right = true;
@@ -50,6 +47,8 @@ public class GameField extends JPanel implements ActionListener  {
     //Конструкор класса
     public GameField(){
         loadImages();//Закгрузка изображений
+        LvlButton1 but1 = new LvlButton1();
+        but1.LvlButton1();
         initGame();//Инициализация игры
         addKeyListener(new FieldKeyListener());//Прослушивание нажатий
         setFocusable(true);
@@ -63,14 +62,13 @@ public class GameField extends JPanel implements ActionListener  {
             y[i] = 48 ;
         }
         timer = new Timer(SPEED,this);
-        System.out.println("Timer Speed "+ SPEED);
         timer.start();//Запуск игры
         createApple();//Создание яблока
     }
     //Рандомное положение яблока по Х и У
     public void createApple(){
         chances = new Random().nextInt(3);
-        System.out.println("chances " + chances);
+
         appleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
         appleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
 
@@ -91,9 +89,6 @@ public class GameField extends JPanel implements ActionListener  {
             if(chances == 0 /*|| chances == 1*/){
                 createBigApple();//Создание большого яблока
             }
-            /*if(chances == 2){
-                createSlowApple();
-            }*/
         }
 
     }
@@ -118,36 +113,15 @@ public class GameField extends JPanel implements ActionListener  {
         }
     }
 
-    /*public void createSlowApple(){
-        SlowAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
-        SlowAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
-        //Проверка на появление большого яблока под змеей
-        for (int i = 1; i < sizeSnake; i++) {
-            if ((x[i] == SlowAppleX) && (y[i] == SlowAppleY)) {
-                SlowAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
-                SlowAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
-            }
-        }
-    }
-    //Проверка на сталкновение с большим яоблоком
-    public void checkSlowApple(){
-        if(x[0] == SlowAppleX && y[0] == SlowAppleY){
-            SPEED += 25;
-            timer.stop();
-            System.out.println("SPEED "+SPEED);
-            timer1 = new Timer(SPEED,this);
-            System.out.println("Timer Speed_1 "+ SPEED);
-            timer1.start();//Запуск игры
 
-            SlowAppleX = -16;
-            SlowAppleY = -16;
-        }
-    }*/
+
 
     public void loadImages(){
-        //Картинка медленного яблока
-        ImageIcon iias = new ImageIcon("src/resources/Slow_Apple_Tefa.png");
-        SlowApple = iias.getImage();
+
+        //Картинка хвоста змеи
+        ImageIcon iial = new ImageIcon("src/resources/Tail_Snake_Tefa.png");
+        lastSnake = iial.getImage();
+
         //Картинка большого яблока
         ImageIcon iiab = new ImageIcon("src/resources/Big_Apple_Nick.png");
         BigApple = iiab.getImage();
@@ -181,7 +155,7 @@ public class GameField extends JPanel implements ActionListener  {
             g.drawString(menu_text_1,40,SIZE/2 - 30);
             g.drawString(menu_text_2,50,SIZE/2);
             g.drawString(menu_text_3,50,SIZE/2 + 30);
-            g.drawString(menu_text_4,SIZE/2 - 70,SIZE/2 + 200);
+            g.drawString(menu_text_4,SIZE/2 - 80,SIZE/2 + 200);
         }
 
         //Отрисовка игрового поля
@@ -200,15 +174,20 @@ public class GameField extends JPanel implements ActionListener  {
             //Отрисовка яблок
             g.drawImage(apple, appleX, appleY,this);
             g.drawImage(BigApple, BigAppleX, BigAppleY,this);
-            g.drawImage(SlowApple, SlowAppleX, SlowAppleY,this);
+
 
             for (int i = 0; i < sizeSnake; i++) {
                 if(i == 0){
                     //Отрисовка головы змеи
-                    g.drawImage(snakeHead,x[i],y[i],this);
+                    g.drawImage(snakeHead, x[i], y[i],this);
+
+                }else if(i == sizeSnake-1){
+                    //Отрисовка хвоста змеи
+                    g.drawImage(lastSnake, x[i], y[i],this);
+
                 }else{
                     //Отрисовка тела змеи
-                    g.drawImage(snake,x[i],y[i],this);
+                    g.drawImage(snake, x[i], y[i],this);
                 }
             }
         }
@@ -322,7 +301,7 @@ public class GameField extends JPanel implements ActionListener  {
             if(key == KeyEvent.VK_SPACE){
                 if(died){
                     timer.stop();
-                    SPEED = 125;
+
                     ImageIcon iid0 = new ImageIcon("src/resources/Snake_Bys_Right.png");
                     snakeHead = iid0.getImage();
 
