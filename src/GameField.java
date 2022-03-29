@@ -9,7 +9,7 @@ import java.util.Random;
 
 
 public class GameField extends JPanel implements ActionListener  {
-    public static int SPEED = 125;//скорсть игры
+    public static int SPEED;//скорсть игры
     private static final int UNIT = 25;//Кол-во клеток(wight, height)
     public static final int ONE_UNIT = 16;//Размер клеток
     public static int SIZE = UNIT*ONE_UNIT;//Максимальный размер карты
@@ -47,10 +47,8 @@ public class GameField extends JPanel implements ActionListener  {
     //Конструкор класса
     public GameField(){
         loadImages();//Закгрузка изображений
-        LvlButton1 but1 = new LvlButton1();
-        but1.LvlButton1();
-        initGame();//Инициализация игры
         addKeyListener(new FieldKeyListener());//Прослушивание нажатий
+        initGame();//Инициализация игры
         setFocusable(true);
     }
 
@@ -145,17 +143,32 @@ public class GameField extends JPanel implements ActionListener  {
 
             setBackground(Color.pink);//Задний фон главного меню
             //Вывод главного меню
+            String menu_text_head = "SNAKE";
             String menu_text_1 = "Rules:";
-            String menu_text_2 = "-Press 'Shift' to pause";
-            String menu_text_3 = "-Use 'Up', 'Down', 'Left', 'Right' to control ";
-            String menu_text_4 = "Press 'Enter' to start...";
+            String menu_text_2 = "- Press 'Shift' to pause";
+            String menu_text_3 = "- Use 'Up', 'Down', 'Left', 'Right' to control ";
+//            String menu_text_4 = "Press 'Enter' to start...";
+            String menu_text_line = "----------------------------------------------------------------------------------------";
+            String menu_text_5 = "Select difficulty level: ";
+            String menu_text_6 = "- Press '1' to select easy level";
+            String menu_text_7 = "- Press '2' to select medium level";
+            String menu_text_8 = "- Press '3' to select hard level";
 
-            Font f1 = new Font("Arial", Font.BOLD, 18);
+            Font f1 = new Font("Arial", Font.BOLD, 16);
+            Font f2 = new Font("Arial", Font.ITALIC, 40);
             g.setFont(f1);
-            g.drawString(menu_text_1,40,SIZE/2 - 30);
-            g.drawString(menu_text_2,50,SIZE/2);
-            g.drawString(menu_text_3,50,SIZE/2 + 30);
-            g.drawString(menu_text_4,SIZE/2 - 80,SIZE/2 + 200);
+            g.drawString(menu_text_1,20,SIZE/2 - 90);
+            g.drawString(menu_text_2,30,SIZE/2 - 60);
+            g.drawString(menu_text_3,30,SIZE/2 -30);
+            g.drawString(menu_text_5,20,SIZE/2 + 30);
+            g.drawString(menu_text_6,30,SIZE/2 + 60);
+            g.drawString(menu_text_7,30,SIZE/2 + 90);
+            g.drawString(menu_text_8,30,SIZE/2 + 120);
+            g.drawString(menu_text_line,0,SIZE/2);
+            g.setColor(Color.green);
+            g.setFont(f2);
+            g.drawString(menu_text_head,SIZE/2-60,50);
+//            g.drawString(menu_text_4,SIZE/2 - 80,SIZE/2 + 200);
         }
 
         //Отрисовка игрового поля
@@ -198,17 +211,22 @@ public class GameField extends JPanel implements ActionListener  {
 
             setBackground(Color.cyan);//Задний фон экрана после смерти
             alive = false;
-            String str0 = "Game Over ";
+            String str0 = "Game Over";
             String str1 = "Points: "+ (sizeSnake-2);
             String str2 = "Best record: " + bestRecord;
             String str3 = "Press 'Space' to restart";
+            String str4 = "Press 'Enter' to start menu";
             Font f = new Font("Arial", Font.BOLD, 14);
-            g.setColor(Color.black);
+            Font f1 = new Font("Arial", Font.BOLD, 24);
+            g.setColor(Color.black  );
             g.setFont(f);
-            g.drawString(str0,SIZE/2 - 35,SIZE/2 - 30);
             g.drawString(str1,SIZE/2 - 25,SIZE/2);
             g.drawString(str2,SIZE/2 - 45,SIZE/2 + 30);
             g.drawString(str3,SIZE/2 - 75,SIZE/2 + 60);
+            g.drawString(str4,SIZE/2 - 85,SIZE/2 + 90);
+            g.setColor(Color.red);
+            g.setFont(f1);
+            g.drawString(str0,SIZE/2 - 55,SIZE/2 - 60);
         }
     }
 
@@ -257,7 +275,6 @@ public class GameField extends JPanel implements ActionListener  {
         if(alive){
             checkApple();
             checkBigApple();
-            /*checkSlowApple();*/
             checkCollisions();
             move();
 
@@ -265,7 +282,7 @@ public class GameField extends JPanel implements ActionListener  {
         repaint();
     }
     //Слушание нажатий клавиш
-    class FieldKeyListener extends KeyAdapter{
+    class FieldKeyListener extends KeyAdapter implements ActionListener {
         @Override
         public void keyPressed(KeyEvent e) {
             super.keyPressed(e);
@@ -327,12 +344,53 @@ public class GameField extends JPanel implements ActionListener  {
                 }
             }
             if(key == KeyEvent.VK_ENTER){
-                if(!alive){
+                if(died){
+                    died = false;
+                    alive = false;
+                    helloMenu = true;
+
+                    ImageIcon iid0 = new ImageIcon("src/resources/Snake_Bys_Right.png");
+                    snakeHead = iid0.getImage();
+
+                    left = false;
+                    right = true;
+                    up = false;
+                    down = false;
+
+                    sizeSnake = 2;
+                }
+            }
+            if(key == KeyEvent.VK_1){
+                if(helloMenu){
+                    SPEED = 200;
+                    timer.stop();
+                    initGame();
+                    helloMenu = false;
+                    alive = true;
+                }
+            }
+            if(key == KeyEvent.VK_2){
+                if(helloMenu){
+                    SPEED = 150;
+                    timer.stop();
+                    initGame();
+                    helloMenu = false;
+                    alive = true;
+                }
+            }
+            if(key == KeyEvent.VK_3){
+                if(helloMenu){
+                    SPEED = 75;
+                    timer.stop();
+                    initGame();
                     helloMenu = false;
                     alive = true;
                 }
             }
         }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {}
     }
 
 
