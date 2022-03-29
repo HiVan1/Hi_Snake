@@ -11,6 +11,7 @@ public class MainWindow extends JFrame {
 
 
         setLocationRelativeTo(null);
+//        add(new LvlButton());
         add(new GameField());
         setResizable(false);
         setVisible(true);

@@ -7,12 +7,13 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 
 
-public class GameField extends JPanel implements ActionListener {
-    int SPEED = 125;//скорсть игры
-    private static final int UNIT = 40;//Кол-во клеток(wight, height)
+
+public class GameField extends JPanel implements ActionListener  {
+    public static int SPEED = 125;//скорсть игры
+    private static final int UNIT = 25;//Кол-во клеток(wight, height)
     public static final int ONE_UNIT = 16;//Размер клеток
     public static int SIZE = UNIT*ONE_UNIT;//Максимальный размер карты
-    public int chances;
+    public int chances = 1;
 
     private Image snake;//Объект для картинки змеи
     private Image snakeHead;//Объект для картинки головы змеи
@@ -22,26 +23,29 @@ public class GameField extends JPanel implements ActionListener {
     private static int appleY;//Положение яблока по У
 
     private Image BigApple;//Объект для картинки большого яблока
-    private int BigAppleX;//Положение большого яблока по Х
-    private int BigAppleY;//Положение большого яблока по У
+    private int BigAppleX = -16;//Положение большого яблока по Х
+    private int BigAppleY = -16;//Положение большого яблока по У
+
+    private Image SlowApple;
+    private int SlowAppleX = -16;
+    private int SlowAppleY = -16;
 
     public static int[] x = new int[SIZE];//Массив для змеи по Х
     public static int[] y = new int[SIZE];//Массив для змеи по У
     public static int sizeSnake;//Размер змеи
-    private Timer timer;//Объект таймера
+    public Timer timer;//Объект таймера
+    public Timer timer1;
     //Направление движения змеи
     private boolean left = false;
     private boolean right = true;
     private boolean up = false;
     private boolean down = false;
 
-    private boolean alive = false;//Жива змея true/false
+    public static boolean alive = false;//Жива змея true/false
     private boolean died = false;//Мертва змея true/false
-    private boolean pause = false;//Игра на пузе true/false
-    private boolean helloMenu = true;//Открыто главное меню true/false
+    private boolean pause = false;//Игра на пaузе true/false
+    public static boolean helloMenu = true;//Открыто главное меню true/false
 
-
-//    Apple app = new Apple();
 
     //Конструкор класса
     public GameField(){
@@ -59,17 +63,17 @@ public class GameField extends JPanel implements ActionListener {
             y[i] = 48 ;
         }
         timer = new Timer(SPEED,this);
+        System.out.println("Timer Speed "+ SPEED);
         timer.start();//Запуск игры
         createApple();//Создание яблока
-        createBigApple();//Создание большого яблока
-
     }
     //Рандомное положение яблока по Х и У
     public void createApple(){
-        chances = new Random().nextInt(4);
-
+        chances = new Random().nextInt(3);
+        System.out.println("chances " + chances);
         appleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
         appleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+
         //Проверка на появление яблока под змеей
         for (int i = 1; i < sizeSnake; i++) {
             if ((x[i] == appleX) && (y[i] == appleY)) {
@@ -84,28 +88,17 @@ public class GameField extends JPanel implements ActionListener {
         if(x[0] == appleX && y[0] == appleY){
             sizeSnake++;
             createApple();
+            if(chances == 0 /*|| chances == 1*/){
+                createBigApple();//Создание большого яблока
+            }
+            /*if(chances == 2){
+                createSlowApple();
+            }*/
         }
+
     }
     //Рандомное положение большого яблока по Х и У
     public void createBigApple(){
-
-//        if(chances == 0){
-//            System.out.println("Ник зашел в метод");
-//            BigAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
-//            BigAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
-//            //Проверка на появление большого яблока под змеей
-//            for (int i = 1; i < sizeSnake; i++) {
-//                if ((x[i] == BigAppleX) && (y[i] == BigAppleY)) {
-//                    BigAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
-//                    BigAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
-//                }
-//            }
-//        }
-//        else{
-//            BigAppleX = -ONE_UNIT;
-//            BigAppleY = -ONE_UNIT;
-//        }
-
         BigAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
         BigAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
         //Проверка на появление большого яблока под змеей
@@ -115,19 +108,46 @@ public class GameField extends JPanel implements ActionListener {
                 BigAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
             }
         }
-
-
-
     }
     //Проверка на сталкновение с большим яоблоком
     public void checkBigApple(){
         if(x[0] == BigAppleX && y[0] == BigAppleY){
             sizeSnake+=2;
-            createBigApple();
+            BigAppleX = -16;
+            BigAppleY = -16;
         }
     }
 
+    /*public void createSlowApple(){
+        SlowAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+        SlowAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+        //Проверка на появление большого яблока под змеей
+        for (int i = 1; i < sizeSnake; i++) {
+            if ((x[i] == SlowAppleX) && (y[i] == SlowAppleY)) {
+                SlowAppleX = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+                SlowAppleY = new Random().nextInt(SIZE/ONE_UNIT)*ONE_UNIT;
+            }
+        }
+    }
+    //Проверка на сталкновение с большим яоблоком
+    public void checkSlowApple(){
+        if(x[0] == SlowAppleX && y[0] == SlowAppleY){
+            SPEED += 25;
+            timer.stop();
+            System.out.println("SPEED "+SPEED);
+            timer1 = new Timer(SPEED,this);
+            System.out.println("Timer Speed_1 "+ SPEED);
+            timer1.start();//Запуск игры
+
+            SlowAppleX = -16;
+            SlowAppleY = -16;
+        }
+    }*/
+
     public void loadImages(){
+        //Картинка медленного яблока
+        ImageIcon iias = new ImageIcon("src/resources/Slow_Apple_Tefa.png");
+        SlowApple = iias.getImage();
         //Картинка большого яблока
         ImageIcon iiab = new ImageIcon("src/resources/Big_Apple_Nick.png");
         BigApple = iiab.getImage();
@@ -148,20 +168,22 @@ public class GameField extends JPanel implements ActionListener {
         super.paintComponent(g);
         //Отрисовка главного меню
         if(helloMenu){
+
             setBackground(Color.pink);//Задний фон главного меню
             //Вывод главного меню
             String menu_text_1 = "Rules:";
-            String menu_text_2 = "-Press 'S' to pause";
+            String menu_text_2 = "-Press 'Shift' to pause";
             String menu_text_3 = "-Use 'Up', 'Down', 'Left', 'Right' to control ";
-            String menu_text_4 = "Press 'M' to start...";
+            String menu_text_4 = "Press 'Enter' to start...";
 
-            Font f1 = new Font("Arial", Font.BOLD, 25);
+            Font f1 = new Font("Arial", Font.BOLD, 18);
             g.setFont(f1);
-            g.drawString(menu_text_1,80,SIZE/2 - 30);
-            g.drawString(menu_text_2,90,SIZE/2);
-            g.drawString(menu_text_3,90,SIZE/2 + 30);
-            g.drawString(menu_text_4,SIZE/2 - 80,SIZE/2 + 200);
+            g.drawString(menu_text_1,40,SIZE/2 - 30);
+            g.drawString(menu_text_2,50,SIZE/2);
+            g.drawString(menu_text_3,50,SIZE/2 + 30);
+            g.drawString(menu_text_4,SIZE/2 - 70,SIZE/2 + 200);
         }
+
         //Отрисовка игрового поля
         if(alive){
             setBackground(Color.lightGray);//Задний фон игрового поля
@@ -178,6 +200,7 @@ public class GameField extends JPanel implements ActionListener {
             //Отрисовка яблок
             g.drawImage(apple, appleX, appleY,this);
             g.drawImage(BigApple, BigAppleX, BigAppleY,this);
+            g.drawImage(SlowApple, SlowAppleX, SlowAppleY,this);
 
             for (int i = 0; i < sizeSnake; i++) {
                 if(i == 0){
@@ -191,17 +214,22 @@ public class GameField extends JPanel implements ActionListener {
         }
         //Отрисовка экрана после смерти
         if(died){
+            Record record = new Record();
+            int bestRecord = record.createRecord(sizeSnake-2);
+
             setBackground(Color.cyan);//Задний фон экрана после смерти
             alive = false;
             String str0 = "Game Over ";
             String str1 = "Points: "+ (sizeSnake-2);
-            String str2 = "Press 'Space' to restart";
+            String str2 = "Best record: " + bestRecord;
+            String str3 = "Press 'Space' to restart";
             Font f = new Font("Arial", Font.BOLD, 14);
             g.setColor(Color.black);
             g.setFont(f);
             g.drawString(str0,SIZE/2 - 35,SIZE/2 - 30);
             g.drawString(str1,SIZE/2 - 25,SIZE/2);
-            g.drawString(str2,SIZE/2 - 75,SIZE/2 + 30);
+            g.drawString(str2,SIZE/2 - 45,SIZE/2 + 30);
+            g.drawString(str3,SIZE/2 - 75,SIZE/2 + 60);
         }
     }
 
@@ -250,6 +278,7 @@ public class GameField extends JPanel implements ActionListener {
         if(alive){
             checkApple();
             checkBigApple();
+            /*checkSlowApple();*/
             checkCollisions();
             move();
 
@@ -293,7 +322,7 @@ public class GameField extends JPanel implements ActionListener {
             if(key == KeyEvent.VK_SPACE){
                 if(died){
                     timer.stop();
-
+                    SPEED = 125;
                     ImageIcon iid0 = new ImageIcon("src/resources/Snake_Bys_Right.png");
                     snakeHead = iid0.getImage();
 
@@ -309,7 +338,7 @@ public class GameField extends JPanel implements ActionListener {
                     initGame();
                 }
             }
-            if(key == KeyEvent.VK_ENTER){
+            if(key == KeyEvent.VK_SHIFT){
                 if(!pause){
                     timer.stop();
                     pause = true;
@@ -318,7 +347,7 @@ public class GameField extends JPanel implements ActionListener {
                     pause = false;
                 }
             }
-            if(key == KeyEvent.VK_M){
+            if(key == KeyEvent.VK_ENTER){
                 if(!alive){
                     helloMenu = false;
                     alive = true;
